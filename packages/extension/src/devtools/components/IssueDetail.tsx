@@ -76,7 +76,7 @@ export const IssueDetail: React.FC<IssueDetailProps> = ({
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
           <SeverityBadge severity={issue.impact} />
           <span style={{ fontWeight: 700, fontSize: '14px' }}>{issue.ruleId}</span>
-          {issue.wcagTags.slice(0, 2).map((tag) => (
+          {issue.wcagTags.slice(0, 2).map((tag: string) => (
             <span key={tag} style={{ fontSize: '10px', fontWeight: 600, color: '#6366f1', backgroundColor: '#eef2ff', padding: '1px 5px', borderRadius: '3px' }}>
               {tag}
             </span>

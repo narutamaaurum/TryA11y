@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { ScanResult, FixSuggestion } from '@trya11y/core';
+import type { A11yIssue, ScanResult, FixSuggestion } from '@trya11y/core';
 
 interface ReportExporterProps {
   result: ScanResult;
@@ -9,7 +9,7 @@ interface ReportExporterProps {
 function resultWithFixes(result: ScanResult, fixes: Map<string, FixSuggestion>): ScanResult {
   return {
     ...result,
-    issues: result.issues.map((issue) => ({
+    issues: result.issues.map((issue: A11yIssue) => ({
       ...issue,
       fix: fixes.get(issue.id),
     })),

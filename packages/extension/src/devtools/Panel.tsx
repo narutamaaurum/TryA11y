@@ -47,8 +47,8 @@ function reducer(state: PanelState, action: PanelAction): PanelState {
       return { ...state, severityFilter: action.severity };
     case 'MERGE_LLM_FIXES': {
       if (!state.scanResult) return state;
-      const issueMap = new Map(action.issues.map((i) => [i.id, i]));
-      const mergedIssues = state.scanResult.issues.map((i) => issueMap.get(i.id) ?? i);
+      const issueMap = new Map(action.issues.map((i: A11yIssue) => [i.id, i]));
+      const mergedIssues = state.scanResult.issues.map((i: A11yIssue) => issueMap.get(i.id) ?? i);
       const mergedFixes = { ...state.fixes };
       for (const issue of action.issues) {
         if (issue.fix) mergedFixes[issue.id] = issue.fix;
@@ -164,8 +164,8 @@ export function Panel() {
   const handleApplyAllHighConfidence = useCallback(() => {
     if (!state.scanResult) return;
     state.scanResult.issues
-      .filter((i) => state.fixes[i.id]?.confidence === 'high' && !state.appliedFixes.has(i.id))
-      .forEach((issue) => handleApplyFix(issue));
+      .filter((i: A11yIssue) => state.fixes[i.id]?.confidence === 'high' && !state.appliedFixes.has(i.id))
+      .forEach((issue: A11yIssue) => handleApplyFix(issue));
   }, [state.scanResult, state.fixes, state.appliedFixes, handleApplyFix]);
 
   const handleToggleFocusOrder = useCallback(async () => {
@@ -183,10 +183,10 @@ export function Panel() {
   }, [focusOrderActive]);
 
   const filteredIssues = state.scanResult?.issues.filter(
-    (i) => state.severityFilter === 'all' || i.impact === state.severityFilter
+    (i: A11yIssue) => state.severityFilter === 'all' || i.impact === state.severityFilter
   ) ?? [];
 
-  const severityCounts = state.scanResult?.issues.reduce((acc, i) => {
+  const severityCounts = state.scanResult?.issues.reduce((acc: Record<string, number>, i: A11yIssue) => {
     acc[i.impact] = (acc[i.impact] || 0) + 1;
     return acc;
   }, {} as Record<string, number>) ?? {};
@@ -194,7 +194,7 @@ export function Panel() {
   const fixableCount = Object.keys(state.fixes).length;
   const highConfidenceRemaining = state.scanResult
     ? state.scanResult.issues.filter(
-        (i) => state.fixes[i.id]?.confidence === 'high' && !state.appliedFixes.has(i.id)
+        (i: A11yIssue) => state.fixes[i.id]?.confidence === 'high' && !state.appliedFixes.has(i.id)
       ).length
     : 0;
   const score = state.scanResult ? computeScore(state.scanResult, state.appliedFixes) : null;
@@ -263,7 +263,7 @@ export function Panel() {
             <input
               type="checkbox"
               checked={ollamaConfig.enabled}
-              onChange={(e) => setOllamaConfig((c) => ({ ...c, enabled: e.target.checked }))}
+              onChange={(e) => setOllamaConfig((c: OllamaConfig) => ({ ...c, enabled: e.target.checked }))}
               style={{ width: '16px', height: '16px', cursor: 'pointer' }}
             />
             <span style={{ fontSize: '13px', color: '#e0e0e0', fontWeight: 600 }}>Enable AI explanations</span>
@@ -274,7 +274,7 @@ export function Panel() {
               <input
                 type="text"
                 value={ollamaConfig.baseUrl}
-                onChange={(e) => setOllamaConfig((c) => ({ ...c, baseUrl: e.target.value }))}
+                onChange={(e) => setOllamaConfig((c: OllamaConfig) => ({ ...c, baseUrl: e.target.value }))}
                 style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', border: '1px solid #2a2a4a', background: '#16162a', color: '#e0e0e0', fontSize: '13px', boxSizing: 'border-box' }}
               />
             </div>
@@ -283,7 +283,7 @@ export function Panel() {
               <input
                 type="text"
                 value={ollamaConfig.model}
-                onChange={(e) => setOllamaConfig((c) => ({ ...c, model: e.target.value }))}
+                onChange={(e) => setOllamaConfig((c: OllamaConfig) => ({ ...c, model: e.target.value }))}
                 style={{ width: '100%', padding: '6px 10px', borderRadius: '6px', border: '1px solid #2a2a4a', background: '#16162a', color: '#e0e0e0', fontSize: '13px', boxSizing: 'border-box' }}
               />
             </div>
@@ -334,7 +334,7 @@ export function Panel() {
                 onSelect={() => dispatch({ type: 'SELECT_ISSUE', issue })}
                 onApplyFix={() => handleApplyFix(issue)}
                 onUndoFix={() => handleUndoFix(issue)}
-                onHighlight={() => {
+                onHighlight={(issue: A11yIssue) => {
                     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                       const tabId = tabs[0]?.id;
                       if (!tabId) return;
