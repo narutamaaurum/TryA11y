@@ -1,0 +1,67 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.log
+coverage/
+*.lcov
+.vite/
+*.map
+
+# pnpm
+.pnpm-store/
+.pnpm-debug.log
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Secrets & credentials
+*.pem
+*.key
+*.cert
+*.p12
+*.pfx
+*.jks
+*.keystore
+secrets.json
+secrets.*.json
+credentials.json
+credentials.*.json
+service-account*.json
+*_rsa
+*_rsa.pub
+*_dsa
+*_dsa.pub
+*_ecdsa
+*_ed25519
+*.gpg
+*.asc
+auth.json
+
+# API keys / tokens (common filenames)
+.token
+.tokens
+.secret
+api-keys.json
+.npmrc
+.yarnrc
+
+# OS / temp
+*.tmp
+*.temp
+.cache/

@@ -1,0 +1,36 @@
+{
+  "name": "trya11y",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Accessibility tool with offline auto-fix generation and one-click GitHub PR creation",
+  "keywords": [
+    "accessibility",
+    "a11y",
+    "wcag",
+    "axe-core",
+    "chrome-extension",
+    "github",
+    "auto-fix"
+  ],
+  "license": "MIT",
+  "author": "TryA11y Contributors",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trya11y/trya11y.git"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -r --parallel dev",
+    "dev:web": "pnpm --filter @trya11y/web dev",
+    "dev:ext": "pnpm --filter @trya11y/extension dev",
+    "ollama": "OLLAMA_ORIGINS=\"*\" ollama serve",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "clean": "pnpm -r clean"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  }
+}
