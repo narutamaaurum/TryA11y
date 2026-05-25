@@ -8,6 +8,8 @@
 
 > 🌐 **[Live Preview →](https://priyasahay.github.io/TryA11y/)**
 
+If you find TryA11y useful, please consider giving it a ⭐ star — it really helps the project grow!
+
 TryA11y is a Chrome extension that scans any page for WCAG 2.1 violations using [axe-core](https://github.com/dequelabs/axe-core), generates confidence-rated code fixes with a heuristic engine, and explains every issue in plain English using a local AI model. No data leaves your machine.
 
 ---
