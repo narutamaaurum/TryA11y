@@ -295,6 +295,8 @@ describe('scan – ScanOptions.context', () => {
 
   it('falls back to document when no context is provided', async () => {
     await scan();
-    expect(mockAxeRun.mock.calls[0][0]).toBe(document);
+    expect(mockAxeRun.mock.calls[0][0]).toEqual({
+      exclude: [['[data-trya11y-focus-overlay]'], ['.trya11y-highlight']],
+    });
   });
 });
