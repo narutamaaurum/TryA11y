@@ -99,6 +99,7 @@ export function Panel() {
   const [focusOrderActive, setFocusOrderActive] = useState(false);
   const [focusOrderCount, setFocusOrderCount] = useState<number | null>(null);
   const [enhancing, setEnhancing] = useState(false);
+  const [highlightedIssueId, setHighlightedIssueId] = useState<string | null>(null);
   const [ollamaConfig, setOllamaConfig] = useState<OllamaConfig>({ enabled: false, baseUrl: 'http://localhost:11434', model: 'llama3.2' });
 
   useEffect(() => {
@@ -128,13 +129,26 @@ export function Panel() {
         if (response?.type === 'SCAN_RESULT') {
           dispatch({ type: 'SCAN_COMPLETE', result: response.result, fixes: response.fixes ?? {} });
           setEnhancing(true);
+          const historyPayload = {
+            url: response.result.url,
+            timestamp: response.result.timestamp,
+            violations: response.result.violations,
+            passes: response.result.passes,
+            incomplete: response.result.incomplete,
+            fixes: Object.keys(response.fixes ?? {}).length,
+            durationMs: response.result.scanDurationMs,
+          };
+          chrome.storage.local.set({
+            lastScanSummary: {
+              violations: response.result.violations,
+              passes: response.result.passes,
+              fixesAvailable: Object.keys(response.fixes ?? {}).length,
+              timestamp: response.result.timestamp,
+            },
+          });
           chrome.runtime.sendMessage({
             type: 'SAVE_SCAN_HISTORY',
-            payload: {
-              url: response.result.url,
-              timestamp: response.result.timestamp,
-              violations: response.result.violations,
-            },
+            payload: historyPayload,
           });
         }
       });
@@ -331,6 +345,7 @@ export function Panel() {
                 issue={issue}
                 selected={state.selectedIssue?.id === issue.id}
                 appliedFixes={state.appliedFixes}
+                isHighlighted={highlightedIssueId === issue.id}
                 onSelect={() => dispatch({ type: 'SELECT_ISSUE', issue })}
                 onApplyFix={() => handleApplyFix(issue)}
                 onUndoFix={() => handleUndoFix(issue)}
@@ -338,7 +353,9 @@ export function Panel() {
                     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                       const tabId = tabs[0]?.id;
                       if (!tabId) return;
-                      chrome.tabs.sendMessage(tabId, { type: 'HIGHLIGHT_ELEMENT', selector: issue.element.selector, severity: issue.impact });
+                      chrome.tabs.sendMessage(tabId, { type: 'HIGHLIGHT_ELEMENT', selector: issue.element.selector, severity: issue.impact }, (response) => {
+                        setHighlightedIssueId(response?.highlighted ? issue.id : null);
+                      });
                     });
                   }}
               />

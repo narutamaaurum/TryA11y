@@ -32,6 +32,10 @@ const fixRegistry = new Map<string, { issue: A11yIssue; fix: FixSuggestion }>();
 // ---- Focus Order state ----------------------------------------------------
 const focusOverlays: HTMLElement[] = [];
 
+// ---- Active highlight state -----------------------------------------------
+let activeHighlightSelector: string | null = null;
+let activeHighlightUndo: (() => void) | null = null;
+
 function showFocusOrder(): number {
   hideFocusOrder();
   const focusable = Array.from(
@@ -47,6 +51,7 @@ function showFocusOrder(): number {
     const rect = el.getBoundingClientRect();
     const overlay = document.createElement('div');
     overlay.setAttribute('data-trya11y-focus-overlay', '');
+    overlay.setAttribute('aria-hidden', 'true');
     overlay.style.cssText = [
       'position:fixed',
       `top:${rect.top}px`,
@@ -124,8 +129,19 @@ chrome.runtime.onMessage.addListener((
 
         case 'HIGHLIGHT_ELEMENT': {
           const { selector, severity = 'moderate' } = message as { type: string; selector: string; severity?: string };
-          highlightElement(selector, severity);
-          sendResponse({ ok: true });
+          if (selector === activeHighlightSelector) {
+            // Same element — toggle off
+            if (activeHighlightUndo) activeHighlightUndo();
+            activeHighlightSelector = null;
+            activeHighlightUndo = null;
+            sendResponse({ ok: true, highlighted: false });
+          } else {
+            // Different element — clear previous, highlight new
+            if (activeHighlightUndo) activeHighlightUndo();
+            activeHighlightUndo = highlightElement(selector, severity);
+            activeHighlightSelector = selector;
+            sendResponse({ ok: true, highlighted: true });
+          }
           break;
         }
 

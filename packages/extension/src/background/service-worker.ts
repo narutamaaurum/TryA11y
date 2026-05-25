@@ -106,10 +106,8 @@ chrome.runtime.onMessage.addListener((message: ExtMessage, _sender, sendResponse
           });
           const mime = format === 'json' ? 'application/json' : format === 'html' ? 'text/html' : 'text/markdown';
           const ext = format === 'markdown' ? 'md' : format;
-          const blob = new Blob([report], { type: mime });
-          const url = URL.createObjectURL(blob);
-          await chrome.downloads.download({ url, filename: `trya11y-report.${ext}`, saveAs: false });
-          URL.revokeObjectURL(url);
+          const dataUrl = `data:${mime};charset=utf-8,${encodeURIComponent(report)}`;
+          await chrome.downloads.download({ url: dataUrl, filename: `trya11y-report.${ext}`, saveAs: false });
           sendResponse({ ok: true });
           break;
         }

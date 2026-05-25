@@ -53,10 +53,12 @@ export async function scan(options: ScanOptions = {}): Promise<ScanResult> {
     axeConfig.runOnly = { type: 'tag', values: tagMap[options.wcagLevel] };
   }
 
-  const context = options.context ?? document;
+  const axeContext: axe.ElementContext = options.context
+    ? (options.context as axe.ElementContext)
+    : { exclude: [['[data-trya11y-focus-overlay]'], ['.trya11y-highlight']] };
 
   axe.reset();
-  const results = await axe.run(context as axe.ElementContext, axeConfig);
+  const results = await axe.run(axeContext, axeConfig);
 
   const issues: A11yIssue[] = results.violations.flatMap((violation) =>
     violation.nodes.map((node, idx) => normalizeIssue(violation, node, idx)),

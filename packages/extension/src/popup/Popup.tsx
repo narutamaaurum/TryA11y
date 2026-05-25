@@ -52,23 +52,24 @@ export function Popup() {
         const s: ScanSummary = {
           violations: result.violations,
           passes: result.passes,
-          fixesAvailable: result.issues.filter((i) => i.fix).length,
+          fixesAvailable: Object.keys((response.fixes as Record<string, unknown>) ?? {}).length,
           timestamp: Date.now(),
         };
         setSummary(s);
-        chrome.storage.local.set({ lastScanSummary: s });
+        chrome.storage.local.set({ lastScanSummary: s, lastScanResult: response.result });
       }
     });
   }, []);
 
   const handleExport = useCallback((format: ReportFormat) => {
     setExporting(format);
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const tabId = tabs[0]?.id;
-      if (!tabId) { setExporting(null); return; }
-      chrome.tabs.sendMessage(tabId, { type: 'EXPORT_REPORT', format }, () => {
-        setExporting(null);
-      });
+    chrome.storage.local.get('lastScanResult', (stored) => {
+      const result = stored.lastScanResult;
+      if (!result) { setExporting(null); return; }
+      chrome.runtime.sendMessage(
+        { type: 'EXPORT_REPORT', payload: { result, format } },
+        () => { setExporting(null); },
+      );
     });
   }, []);
 

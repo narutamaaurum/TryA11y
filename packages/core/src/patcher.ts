@@ -263,6 +263,7 @@ export function highlightElement(selector: string, severity: string): () => void
   // Create the overlay element
   const overlay = document.createElement('div');
   overlay.className = 'trya11y-highlight';
+  overlay.setAttribute('aria-hidden', 'true');
   overlay.dataset.trya11ySeverity = severity;
 
   Object.assign(overlay.style, {

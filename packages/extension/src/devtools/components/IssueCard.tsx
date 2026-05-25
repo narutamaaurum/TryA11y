@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import type { A11yIssue, FixSuggestion } from '@trya11y/core';
 import { SeverityBadge } from './SeverityBadge';
 
@@ -6,6 +6,7 @@ interface IssueCardProps {
   issue: A11yIssue;
   selected: boolean;
   appliedFixes: Set<string>;
+  isHighlighted: boolean;
   onSelect: (issue: A11yIssue) => void;
   onApplyFix: (issue: A11yIssue) => void;
   onUndoFix: (issue: A11yIssue) => void;
@@ -17,19 +18,17 @@ export const IssueCard: React.FC<IssueCardProps> = ({
   issue,
   selected,
   appliedFixes,
+  isHighlighted,
   onSelect,
   onApplyFix,
   onUndoFix,
   onHighlight,
 }) => {
   const isApplied = appliedFixes.has(issue.id);
-  const [highlightStatus, setHighlightStatus] = useState<'idle' | 'done'>('idle');
 
   const handleHighlight = (e: React.MouseEvent) => {
     e.stopPropagation();
     onHighlight(issue);
-    setHighlightStatus('done');
-    setTimeout(() => setHighlightStatus('idle'), 2500);
   };
 
   const cardStyle: React.CSSProperties = {
@@ -67,8 +66,8 @@ export const IssueCard: React.FC<IssueCardProps> = ({
     padding: '2px 6px',
     border: '1px solid #2a2a4a',
     borderRadius: '4px',
-    background: highlightStatus === 'done' ? '#312e81' : 'transparent',
-    color: highlightStatus === 'done' ? '#a5b4fc' : '#aaaacc',
+    background: isHighlighted ? '#312e81' : 'transparent',
+    color: isHighlighted ? '#a5b4fc' : '#aaaacc',
     cursor: 'pointer',
     transition: 'background-color 0.15s',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -116,7 +115,7 @@ export const IssueCard: React.FC<IssueCardProps> = ({
         </span>
         <button
           onClick={handleHighlight}
-          title="Highlight element on page"
+          title={isHighlighted ? 'Remove highlight' : 'Highlight element on page'}
           style={highlightBtnStyle}
         >
           🎯
