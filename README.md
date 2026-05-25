@@ -84,7 +84,41 @@ Both `extension` and `web` depend on `@trya11y/core`. The service worker imports
 
 ## Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md).
+We welcome contributions! Please read [CONTRIBUTING.md](./CONTRIBUTING.md) before opening a PR.
+
+**Quick checklist before submitting:**
+
+- [ ] `pnpm build` passes with no errors
+- [ ] `pnpm typecheck` passes with no errors
+- [ ] `pnpm test` passes with no new failures
+- [ ] New behaviour is covered by a test (or explain why one isn't needed)
+- [ ] Commit is signed off (`git commit -s`) per [CLA.md](./CLA.md)
+
+```bash
+# Fork the repo, then:
+git checkout -b feat/your-feature
+pnpm install
+pnpm build        # build all packages
+pnpm test         # make sure tests pass
+pnpm typecheck    # make sure types are clean
+# open a PR
+```
+
+---
+
+## Maintainers
+
+- [priyasahay](https://github.com/priyasahay) — Creator & Maintainer
+
+---
+
+## Contributors
+
+A big thank you to all our contributors! 🎉
+
+[![Contributors](https://contrib.rocks/image?repo=priyasahay/TryA11y)](https://github.com/priyasahay/TryA11y/graphs/contributors)
+
+---
 
 ## Security
 
