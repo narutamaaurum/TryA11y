@@ -6,7 +6,7 @@
 
 **Accessibility auditing that finds, fixes, and explains — entirely offline.**
 
-> 📖 **[View Docs & Live Preview →](https://priyasahay.github.io/TryA11y/)**
+> 🌐 **[Live Preview →](https://priyasahay.github.io/TryA11y/)**
 
 TryA11y is a Chrome extension that scans any page for WCAG 2.1 violations using [axe-core](https://github.com/dequelabs/axe-core), generates confidence-rated code fixes with a heuristic engine, and explains every issue in plain English using a local AI model. No data leaves your machine.
 
